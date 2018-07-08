@@ -12,17 +12,14 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: const Text('New Module Wizard'),
+        title: const Text("Configure new module"),
       ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'New module wizard goes here',
-            ),
-          ],
-        ),
+      body: new PageView(
+        children: <Widget>[
+          new Center(child: const Text("Step 1")),
+          new Center(child: const Text("Step 2")),
+          new Center(child: const Text("Step 3")),
+        ],
       ),
     );
   }
