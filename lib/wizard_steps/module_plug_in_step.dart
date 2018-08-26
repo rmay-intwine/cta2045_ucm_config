@@ -15,11 +15,6 @@ class _ModulePlugInStepState extends State<ModulePlugInStep> {
     return new Column(
       children: <Widget>[
         new Expanded(child: const Text('Instructions for plugging in the module')),
-        new Row(
-          children: <Widget>[
-            new FlatButton(onPressed: widget.previousStepListener, child: const Text('Back')),
-          ],
-        ),
       ],
     );
   }

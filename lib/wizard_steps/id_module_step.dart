@@ -16,12 +16,6 @@ class _IdModuleStepState extends State<IdModuleStep> {
     return new Column(
       children: <Widget>[
         new Expanded(child: const Text('Module Identification text here')),
-        new Row(
-          children: <Widget>[
-            new FlatButton(onPressed: widget.previousStepListener, child: const Text('Back')),
-            new FlatButton(onPressed: widget.nextStepListener, child: const Text('Next')),
-          ],
-        ),
       ],
     );
   }
