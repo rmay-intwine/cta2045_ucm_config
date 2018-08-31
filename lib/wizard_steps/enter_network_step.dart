@@ -19,15 +19,13 @@ class _EnterNetworkStepState extends State<EnterNetworkStep> {
 
   _EnterNetworkStepState(this._networkName);
 
-  void SubmitData(value) {
+  void submitData(value) {
     _networkName = value;
     widget.submitListener(value);
-    debugPrint('onSubmit: $_networkName');
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('EnterNetworkState.build: $_networkName');
     _textController.text = _networkName;
 
     return new Center(
@@ -39,11 +37,11 @@ class _EnterNetworkStepState extends State<EnterNetworkStep> {
             controller: _textController,
             onSubmitted: (value) {
               setState(() {
-                SubmitData(value);
+                submitData(value);
               });
             },
             onChanged: (value) {
-              SubmitData(value);
+              submitData(value);
             },
           ),
         ],

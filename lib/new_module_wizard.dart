@@ -16,6 +16,11 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   final Duration _duration = new Duration(milliseconds: 250);
   final Curve _curve = Curves.linear;
 
+  static const int _pageCount = 3;
+
+  bool _isBackButtonEnabled = false;
+  bool _isNextButtonEnabled = true;
+
   String networkName;
 
   void _showNextPage() {
@@ -23,9 +28,11 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
     _pageController.nextPage(
         duration: _duration,
         curve: _curve);
+    PageView test = new PageView();
   }
 
   void _showPreviousPage() {
+    FocusScope.of(context).requestFocus(new FocusNode());
     _pageController.previousPage(
         duration: _duration,
         curve: _curve);
@@ -44,23 +51,47 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
             new PageView(
               physics: new NeverScrollableScrollPhysics(),
               controller: _pageController,
+              onPageChanged: (value) {
+                setState(() {
+                  debugPrint('onPageChanged: $value');
+                  if(value == 0) {
+                    _isBackButtonEnabled = false;
+                  }
+                  else {
+                    _isBackButtonEnabled = true;
+                  }
+
+                  if(value == _pageCount - 1) {
+                    _isNextButtonEnabled = false;
+                  }
+                  else {
+                    _isNextButtonEnabled = true;
+                  }
+                });
+              },
               children: <Widget>[
                 new Center(child: new EnterNetworkStep(networkName, (value) {
                   networkName = value;
                 })),
-                new Center(child: new IdModuleStep(_showPreviousPage, _showNextPage)),
+                new Center(child: new IdModuleStep()),
                 new Center(child: new ModulePlugInStep(_showPreviousPage)),
               ],
             ),
             new Positioned(
               bottom: 0.0,
               left: 0.0,
-              child: new FlatButton(onPressed: _showPreviousPage, child: const Text("Previous")),
+              child: new FlatButton(
+                onPressed: _isBackButtonEnabled ? _showPreviousPage : null,
+                child: const Text("Back")
+              ),
             ),
             new Positioned(
               bottom: 0.0,
               right: 0.0,
-              child: new FlatButton(onPressed: _showNextPage, child: const Text("Next")),
+              child: new FlatButton(
+                onPressed: _isNextButtonEnabled ? _showNextPage : null,
+                child: const Text("Next")
+              ),
             )
           ]
         ),
