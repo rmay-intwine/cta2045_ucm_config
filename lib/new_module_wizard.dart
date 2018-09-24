@@ -21,7 +21,8 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   bool _isBackButtonEnabled = false;
   bool _isNextButtonEnabled = true;
 
-  String networkName;
+  String _networkName;
+  String _moduleID;
 
   void _showNextPage() {
     FocusScope.of(context).requestFocus(new FocusNode());
@@ -70,10 +71,15 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                 });
               },
               children: <Widget>[
-                new Center(child: new EnterNetworkStep(networkName, (value) {
-                  networkName = value;
+                new Center(child: new EnterNetworkStep(_networkName, (value) {
+                  _networkName = value;
                 })),
-                new Center(child: new IdModuleStep()),
+                new Center(child: new IdModuleStep(
+                  _moduleID,
+                  (value) {
+                    _moduleID = value;
+                  }
+                )),
                 new Center(child: new ModulePlugInStep(_showPreviousPage)),
               ],
             ),

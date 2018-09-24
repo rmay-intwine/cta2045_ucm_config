@@ -9,6 +9,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
 
+  # Firebase ML Vision API for reading QR codes.
+  firebase_ml_vision: ^0.1.2
+
+  image_picker: ^0.4.10
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "698496816138",
+    "firebase_url": "https://cta2045-ucm-config.firebaseio.com",
+    "project_id": "cta2045-ucm-config",
+    "storage_bucket": "cta2045-ucm-config.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698496816138:android:08b12308206a7430",
+        "android_client_info": {
+          "package_name": "com.cairnsystems.cta2045ucmconfig"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "698496816138-rvcrp3npf74jrk12j0ous1kuc9f43oc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7DwAKII4IVxo9ERm9WNxD48sxU45jnng"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
