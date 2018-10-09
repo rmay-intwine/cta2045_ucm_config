@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ModulePlugInStep extends StatefulWidget {
-  final Function previousStepListener;
-
-  ModulePlugInStep(this.previousStepListener);
+  ModulePlugInStep();
 
   @override
   _ModulePlugInStepState createState() => new _ModulePlugInStepState();
@@ -13,8 +11,9 @@ class _ModulePlugInStepState extends State<ModulePlugInStep> {
   @override
   Widget build(BuildContext context) {
     return new Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        new Expanded(child: const Text('Instructions for plugging in the module')),
+        const Text('Plug in the module. Tap Next when done.'),
       ],
     );
   }

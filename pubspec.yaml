@@ -12,6 +12,9 @@ dependencies:
   # Firebase ML Vision API for reading QR codes.
   firebase_ml_vision: ^0.1.2
 
+  # Connectivity plugin to get list of networks and connect to them
+  connectivity: ^0.3.2
+
   image_picker: ^0.4.10
 
 dev_dependencies:
