@@ -16,7 +16,6 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity(): FlutterActivity() {
   private val CHANNEL = "com.cairnsystems.connectivity/ap"
-  private val LOGLABEL = "Kotlin"
   private val MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1
 
   var resultList = ArrayList<ScanResult>()
@@ -41,10 +40,8 @@ class MainActivity(): FlutterActivity() {
                           MY_PERMISSIONS_REQUEST_COARSE_LOCATION)
         }
         else {
-          android.util.Log.d(LOGLABEL, "Native called")
-          doTheThing()
-          val returnValue = getResult()
-          result.success(returnValue)
+          startScanning()
+          result.success(true)
         }
       } else {
         result.notImplemented()
@@ -58,23 +55,15 @@ class MainActivity(): FlutterActivity() {
     when(requestCode) {
       MY_PERMISSIONS_REQUEST_COARSE_LOCATION -> {
         if ((grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED)) {
-          doTheThing()
+          startScanning()
         }
       }
     }
   }
 
-  fun doTheThing() {
-    android.util.Log.d(LOGLABEL, "Doing the thing")
-    startScanning()
-  }
-
   fun startScanning() {
-    android.util.Log.d(LOGLABEL, "startScanning")
     registerReceiver(broadcastReceiver, android.content.IntentFilter(android.net.wifi.WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
-    android.util.Log.d(LOGLABEL, "Register receiver")
     wifiManager.startScan()
-    android.util.Log.d(LOGLABEL, "Scanning started")
 
     android.os.Handler().postDelayed({
       stopScanning()
@@ -82,19 +71,12 @@ class MainActivity(): FlutterActivity() {
   }
 
   fun stopScanning() {
-    android.util.Log.d(LOGLABEL, "stopScanning")
     unregisterReceiver(broadcastReceiver)
-    val axisList = ArrayList<Pair<String, Int>>()
+    val ssidList = ArrayList<String>()
     for(result in resultList) {
-      axisList.add(Pair(result.SSID, result.level))
+      ssidList.add(result.SSID)
     }
 
-    android.util.Log.d(LOGLABEL, "--- Start Results ---")
-    android.util.Log.d(LOGLABEL, axisList.toString())
-    android.util.Log.d(LOGLABEL, "--- End Results ---")
-  }
-
-  private fun getResult(): String {
-    return "This is a result from native Kotlin."
+    MethodChannel(flutterView, CHANNEL).invokeMethod("setSsid", ssidList)
   }
 }
