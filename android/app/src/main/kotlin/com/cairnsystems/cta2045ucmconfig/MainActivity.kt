@@ -67,7 +67,7 @@ class MainActivity(): FlutterActivity() {
 
     android.os.Handler().postDelayed({
       stopScanning()
-    }, 10000)
+    }, 7000)
   }
 
   fun stopScanning() {

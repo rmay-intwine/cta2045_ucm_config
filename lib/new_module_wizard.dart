@@ -22,7 +22,7 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   bool _isBackButtonEnabled = false;
   bool _isNextButtonEnabled = true;
 
-  String _networkName;
+  String _targetNetworkName;
   String _moduleID;
   String _apName;
 
@@ -73,8 +73,8 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                 });
               },
               children: <Widget>[
-                new Center(child: new EnterNetworkStep(_networkName, (value) {
-                  _networkName = value;
+                new Center(child: new EnterNetworkStep(_targetNetworkName, (value) {
+                  _targetNetworkName = value;
                 })),
                 new Center(child: new IdModuleStep(
                   _moduleID,
@@ -83,9 +83,11 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                   }
                 )),
                 new Center(child: new ModulePlugInStep()),
-                new Center(child: new APListStep((value) {
-                  _apName = value;
-                }))
+                new Center(child: new APListStep(
+                  _moduleID,
+                  (value) {
+                    _apName = value;
+                  }))
               ],
             ),
             new Positioned(

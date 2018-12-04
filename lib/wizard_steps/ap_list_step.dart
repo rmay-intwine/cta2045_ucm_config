@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class APListStep extends StatefulWidget {
+  final String initialSSIDName;
   final Function submitListener;
 
-  APListStep(this.submitListener);
+  APListStep(this.initialSSIDName, this.submitListener);
 
   @override
   _APListStepState createState() => new _APListStepState();
@@ -60,7 +61,39 @@ class _APListStepState extends State<APListStep> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        new Container(
+          child: new Text('Looking for Module'),
+          padding: EdgeInsets.only(bottom: 10.0),
+        ),
         new CircularProgressIndicator(),
+      ],
+    );
+  }
+
+  Widget _getResultMessage() {
+    bool isModuleFound = false;
+    String moduleName = widget.initialSSIDName;
+
+    for(String ssidName in _ssidList) {
+      if(ssidName == moduleName) {
+        isModuleFound = true;
+        break;
+      }
+    }
+
+    String message;
+    if(isModuleFound){
+      message = '$moduleName was found.';
+    }
+    else {
+      message = '$moduleName was not found.';
+    }
+
+    return new Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new Text(message),
       ],
     );
   }
@@ -72,24 +105,8 @@ class _APListStepState extends State<APListStep> {
       child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Container(
-            child: new Text('Please select a network to connect to:'),
-            padding: EdgeInsets.only(bottom: 10.0),
-          ),
           new Expanded(
-            child: _isResultListNull() ? _getProgressIndicator() : new Container(
-              decoration: new BoxDecoration(
-                border: Border.all(),
-              ),
-              padding: EdgeInsets.all(10.0),
-              child: new ListView.builder(
-                  itemCount: _ssidList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                  String apName = _ssidList[index];
-                  return new Text('$apName');
-                },
-              ),
-            ),
+          child: _isResultListNull() ? _getProgressIndicator() : _getResultMessage()
           ),
           new RaisedButton(
             child: Text('Refresh'),
