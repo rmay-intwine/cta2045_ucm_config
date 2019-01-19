@@ -3,22 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class APListStep extends StatefulWidget {
+class APSearchStep extends StatefulWidget {
   final String initialSSIDName;
   final Function submitListener;
 
-  APListStep(this.initialSSIDName, this.submitListener);
+  APSearchStep(this.initialSSIDName, this.submitListener);
 
   @override
-  _APListStepState createState() => new _APListStepState();
+  _APSearchStepState createState() => new _APSearchStepState();
 }
 
-class _APListStepState extends State<APListStep> {
+class _APSearchStepState extends State<APSearchStep> {
   static const MethodChannel platform = const MethodChannel('com.cairnsystems.connectivity/ap');
 
+  bool _appScannedForSSIDs = false;
   List<String> _ssidList;
 
-  _APListStepState() : super() {
+  _APSearchStepState() : super() {
     platform.setMethodCallHandler(_handleNativeCall);
   }
 
@@ -34,10 +35,9 @@ class _APListStepState extends State<APListStep> {
 
   Future<Null> _getResult() async {
     setState(() {
+      _appScannedForSSIDs = false;
       _ssidList = null;
     });
-
-    List<String> resultValue;
 
     try{
       await platform.invokeMethod('getApList');
@@ -51,6 +51,7 @@ class _APListStepState extends State<APListStep> {
     switch(call.method) {
       case "setSsid":
         setState(() {
+          _appScannedForSSIDs = true;
           _ssidList = (call.arguments as List<dynamic>).cast<String>();
         });
     }
@@ -74,10 +75,12 @@ class _APListStepState extends State<APListStep> {
     bool isModuleFound = false;
     String moduleName = widget.initialSSIDName;
 
-    for(String ssidName in _ssidList) {
-      if(ssidName == moduleName) {
-        isModuleFound = true;
-        break;
+    if(_ssidList != null && _ssidList.length > 0) {
+      for(String ssidName in _ssidList) {
+        if(ssidName == moduleName) {
+          isModuleFound = true;
+          break;
+        }
       }
     }
 
@@ -106,11 +109,13 @@ class _APListStepState extends State<APListStep> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new Expanded(
-          child: _isResultListNull() ? _getProgressIndicator() : _getResultMessage()
+          //child: _appScannedForSSIDs ? _getProgressIndicator() : _getResultMessage()
+            child: _appScannedForSSIDs ? _getResultMessage() : _getProgressIndicator()
           ),
           new RaisedButton(
             child: Text('Refresh'),
-            onPressed: _isResultListNull() ? null : _getResult,
+            //onPressed: _appScannedForSSIDs ? null : _getResult,
+            onPressed: _appScannedForSSIDs ? _getResult : null,
           ),
         ],
       ),

@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'wizard_steps/enter_network_step.dart';
 import 'wizard_steps/id_module_step.dart';
 import 'wizard_steps/module_plug_in_step.dart';
-import 'wizard_steps/ap_list_step.dart';
+import 'wizard_steps/ap_search_step.dart';
+import 'wizard_steps/ap_connect_step.dart';
 
 class NewModuleWizard extends StatefulWidget {
 
@@ -17,7 +18,7 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   final Duration _duration = new Duration(milliseconds: 250);
   final Curve _curve = Curves.linear;
 
-  static const int _pageCount = 4;
+  static const int _pageCount = 5;
 
   bool _isBackButtonEnabled = false;
   bool _isNextButtonEnabled = true;
@@ -83,11 +84,12 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                   }
                 )),
                 new Center(child: new ModulePlugInStep()),
-                new Center(child: new APListStep(
+                new Center(child: new APSearchStep(
                   _moduleID,
                   (value) {
                     _apName = value;
-                  }))
+                  })),
+                new Center(child: new APConnectStep(),)
               ],
             ),
             new Positioned(
