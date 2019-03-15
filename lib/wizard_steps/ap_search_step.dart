@@ -5,9 +5,8 @@ import 'package:flutter/services.dart';
 
 class APSearchStep extends StatefulWidget {
   final String initialSSIDName;
-  final Function submitListener;
 
-  APSearchStep(this.initialSSIDName, this.submitListener);
+  APSearchStep(this.initialSSIDName);
 
   @override
   _APSearchStepState createState() => new _APSearchStepState();

@@ -27,6 +27,9 @@ class MainActivity(): FlutterActivity() {
   var resultList = ArrayList<ScanResult>()
   lateinit var wifiManager: WifiManager
 
+  var ssid: String = ""
+  var password: String = ""
+
   val broadcastReceiver = object : android.content.BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?){
       resultList = wifiManager.scanResults as ArrayList<ScanResult>
@@ -41,29 +44,34 @@ class MainActivity(): FlutterActivity() {
 
     MethodChannel(flutterView, CHANNEL).setMethodCallHandler { call, result ->
       if (call.method == "getApList") {
-        if(ContextCompat.checkSelfPermission(this@MainActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-        != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-          ActivityCompat.requestPermissions(this@MainActivity,
-                  arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION),
-                          MY_PERMISSIONS_REQUEST_ACCESS_WIFI_STATE)
-        }
-        else {
+        if(checkPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
           startScanning()
           result.success(true)
         }
+        else {
+          ActivityCompat.requestPermissions(this@MainActivity,
+                  arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION),
+                  MY_PERMISSIONS_REQUEST_ACCESS_WIFI_STATE)
+        }
       }
       else if (call.method == "connectToAp") {
-        if(ContextCompat.checkSelfPermission(this@MainActivity, android.Manifest.permission.CHANGE_WIFI_STATE)
-                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+        var arguments: ArrayList<String>  = call.arguments as ArrayList<String>
+        var listSize: Int = arguments.size
+        //Log.d(DEBUGFILTER, "size: " + listSize)
+        ssid = arguments.get(0)
+        password = arguments.get(1)
+        Log.d(DEBUGFILTER, "arguments: " + ssid)
+
+        if(checkPermission(android.Manifest.permission.CHANGE_WIFI_STATE)) {
+          Log.d(DEBUGFILTER, "Permission granted already")
+          connectToAP(ssid, password)
+          result.success(true)
+        }
+        else {
           Log.d(DEBUGFILTER, "Permission not granted")
           ActivityCompat.requestPermissions(this@MainActivity,
                   arrayOf(android.Manifest.permission.CHANGE_WIFI_STATE),
                   MY_PERMISSIONS_REQUEST_CHANGE_WIFI_STATE)
-        }
-        else {
-          Log.d(DEBUGFILTER, "Permission granted already")
-          connectToAP("GuriGuest")
-          result.success(true)
         }
       }
       else {
@@ -73,6 +81,10 @@ class MainActivity(): FlutterActivity() {
 
     wifiManager = this.applicationContext.getSystemService(android.content.Context.WIFI_SERVICE) as android.net.wifi.WifiManager
     //wifiManager = Context.getSystemService(android.content.Context.WIFI_SERVICE) as android.net.wifi.WifiManager
+  }
+
+  fun checkPermission(permissionToCheck: String): Boolean {
+    return ContextCompat.checkSelfPermission(this@MainActivity, permissionToCheck) == android.content.pm.PackageManager.PERMISSION_GRANTED
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -87,7 +99,7 @@ class MainActivity(): FlutterActivity() {
         Log.d(DEBUGFILTER, "Checking for wifi state permissions")
         if ((grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED)) {
           Log.d(DEBUGFILTER, "Permission was asked for and granted")
-          connectToAP("GuriGuest")
+          connectToAP(ssid, password)
         }
         else {
           Log.d(DEBUGFILTER, "Permission was asked for and not granted")
@@ -96,12 +108,12 @@ class MainActivity(): FlutterActivity() {
     }
   }
 
-  fun connectToAP(ssid: String) {
+  fun connectToAP(ssid: String, password: String) {
     try {
       Log.d(DEBUGFILTER, "entering connectToAP")
       var conf: WifiConfiguration = WifiConfiguration()
       conf.SSID = "\"" + ssid + "\""
-      conf.preSharedKey = "\"8MrS8rnOHV\""
+      conf.preSharedKey = "\"" + password + "\""
 
       conf.status = android.net.wifi.WifiConfiguration.Status.ENABLED
       conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP)
@@ -110,13 +122,13 @@ class MainActivity(): FlutterActivity() {
       conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP)
       conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP)
 
-      Log.d(DEBUGFILTER, "network info: " + conf.SSID + " - " + conf.preSharedKey)
+      Log.d(DEBUGFILTER, "network info: " + conf.SSID)
 
       //var wifiManager: WifiManager = this.getApplicationContext().getSystemService(WIFI_SERVICE) as WifiManager
       var networkID: Int = wifiManager.addNetwork(conf)
       //wifiManager.enableNetwork(networkID, true);
 
-      Log.d(DEBUGFILTER, "After connecting to: " + conf.SSID + " - " + conf.preSharedKey)
+      Log.d(DEBUGFILTER, "After connecting to: " + conf.SSID)
 
       var wifiList: List<WifiConfiguration> = wifiManager.getConfiguredNetworks()
       for(wifiConfig in wifiList) {
@@ -140,7 +152,7 @@ class MainActivity(): FlutterActivity() {
   }
 
   fun startScanning() {
-    Log.d(DEBUGFILTER, "enter startScanning() asdf")
+    Log.d(DEBUGFILTER, "enter startScanning()")
     registerReceiver(broadcastReceiver, android.content.IntentFilter(android.net.wifi.WifiManager.SCAN_RESULTS_AVAILABLE_ACTION))
     Log.d(DEBUGFILTER, "startScan()")
     wifiManager.startScan()
@@ -158,7 +170,6 @@ class MainActivity(): FlutterActivity() {
     Log.d(DEBUGFILTER, "stopScanning() - Creating list")
     val ssidList = ArrayList<String>()
     for(result in resultList) {
-      Log.d(DEBUGFILTER, "Adding SSID: " + result.SSID)
       ssidList.add(result.SSID)
     }
 

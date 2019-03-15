@@ -25,7 +25,6 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
 
   String _targetNetworkName;
   String _moduleID;
-  String _apName;
 
   void _showNextPage() {
     FocusScope.of(context).requestFocus(new FocusNode());
@@ -79,17 +78,13 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                 })),
                 new Center(child: new IdModuleStep(
                   _moduleID,
-                  (value) {
-                    _moduleID = value;
+                  (moduleID) {
+                    _moduleID = moduleID;
                   }
                 )),
                 new Center(child: new ModulePlugInStep()),
-                new Center(child: new APSearchStep(
-                  _moduleID,
-                  (value) {
-                    _apName = value;
-                  })),
-                new Center(child: new APConnectStep(),)
+                new Center(child: new APSearchStep(_moduleID)),
+                new Center(child: new APConnectStep(_moduleID))
               ],
             ),
             new Positioned(
