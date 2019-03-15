@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'wizard_steps/enter_network_step.dart';
 import 'wizard_steps/id_module_step.dart';
 import 'wizard_steps/module_plug_in_step.dart';
+import 'wizard_steps/ap_search_step.dart';
+import 'wizard_steps/ap_connect_step.dart';
 
 class NewModuleWizard extends StatefulWidget {
 
@@ -16,12 +18,12 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
   final Duration _duration = new Duration(milliseconds: 250);
   final Curve _curve = Curves.linear;
 
-  static const int _pageCount = 3;
+  static const int _pageCount = 5;
 
   bool _isBackButtonEnabled = false;
   bool _isNextButtonEnabled = true;
 
-  String _networkName;
+  String _targetNetworkName;
   String _moduleID;
 
   void _showNextPage() {
@@ -71,16 +73,18 @@ class _NewModuleWizardState extends State<NewModuleWizard> {
                 });
               },
               children: <Widget>[
-                new Center(child: new EnterNetworkStep(_networkName, (value) {
-                  _networkName = value;
+                new Center(child: new EnterNetworkStep(_targetNetworkName, (value) {
+                  _targetNetworkName = value;
                 })),
                 new Center(child: new IdModuleStep(
                   _moduleID,
-                  (value) {
-                    _moduleID = value;
+                  (moduleID) {
+                    _moduleID = moduleID;
                   }
                 )),
-                new Center(child: new ModulePlugInStep(_showPreviousPage)),
+                new Center(child: new ModulePlugInStep()),
+                new Center(child: new APSearchStep(_moduleID)),
+                new Center(child: new APConnectStep(_moduleID))
               ],
             ),
             new Positioned(

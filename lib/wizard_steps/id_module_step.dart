@@ -36,6 +36,7 @@ class _IdModuleStepState extends State<IdModuleStep> {
     for(Barcode barcode in barcodes) {
       setState(() {
         _moduleID = barcode.rawValue;
+        submitData(_moduleID);
       });
     }
   }
